@@ -117,7 +117,7 @@ with open('target_tokenizer.pkl', 'rb') as file:
 print(target_tokenizer)
 
 import numpy as np
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.sequence import pad_sequences
 def predict_sequence(input_text, main_model, source_tokenizer, target_tokenizer, max_target_length):
     # Tokenize the input sequence
     input_seq = source_tokenizer.texts_to_sequences([input_text])
