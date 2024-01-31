@@ -99,7 +99,7 @@
 # AIxD+pIfqOw23VLVXfHs4XbAIdLW0RjY9wmKVaV0am9X4gg+l47lXSdE+PPVZLKh06Z+0Iz+ToTRPO1DrAjYag==
 
 
-import tensorflow.keras
+import tensorflow.keras as keras
 # Load the model
 loaded_model = keras.models.load_model('trained_model.h5')
 
