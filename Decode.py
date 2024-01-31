@@ -161,15 +161,21 @@ import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
 @app.route('/api/process_data', methods=['POST'])
 def process_data():
-    data = request.get_json()
-    decoded_sentence = "Hello"
-    print("Final Decoded sentence:", decoded_sentence)
-    # Perform some processing in your Python function
-    result_string = decoded_sentence
-    return jsonify({'result_string': result_string})
-
+    try:
+        data = request.get_json()
+        input_text = data.get('input_string', '')  # Assuming 'input_string' is a key in your JSON payload
+        # Your processing logic here to generate 'decoded_sentence'
+        
+        # For now, let's just use a placeholder value
+        decoded_sentence = f"Processed input: {input_text}"
+        
+        print("Final Decoded sentence:", decoded_sentence)
+        return jsonify({'result_string': decoded_sentence})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
