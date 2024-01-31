@@ -99,59 +99,59 @@
 # AIxD+pIfqOw23VLVXfHs4XbAIdLW0RjY9wmKVaV0am9X4gg+l47lXSdE+PPVZLKh06Z+0Iz+ToTRPO1DrAjYag==
 
 
-import tensorflow.keras as keras
-# Load the model
-loaded_model = keras.models.load_model('trained_model.h5')
+# import tensorflow.keras as keras
+# # Load the model
+# loaded_model = keras.models.load_model('trained_model.h5')
 
-# Display the model summary
+# # Display the model summary
 
-import pickle
+# import pickle
 
-# Load source_tokenizer
-with open('source_tokenizer.pkl', 'rb') as file:
-    source_tokenizer = pickle.load(file)
+# # Load source_tokenizer
+# with open('source_tokenizer.pkl', 'rb') as file:
+#     source_tokenizer = pickle.load(file)
 
-# Load target_tokenizer
-with open('target_tokenizer.pkl', 'rb') as file:
-    target_tokenizer = pickle.load(file)
-print(target_tokenizer)
+# # Load target_tokenizer
+# with open('target_tokenizer.pkl', 'rb') as file:
+#     target_tokenizer = pickle.load(file)
+# print(target_tokenizer)
 
-import numpy as np
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-def predict_sequence(input_text, main_model, source_tokenizer, target_tokenizer, max_target_length):
-    # Tokenize the input sequence
-    input_seq = source_tokenizer.texts_to_sequences([input_text])
-    input_seq = pad_sequences(input_seq, padding='post')
+# import numpy as np
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
+# def predict_sequence(input_text, main_model, source_tokenizer, target_tokenizer, max_target_length):
+#     # Tokenize the input sequence
+#     input_seq = source_tokenizer.texts_to_sequences([input_text])
+#     input_seq = pad_sequences(input_seq, padding='post')
 
-    # Initialize the target sequence with the start token
-    target_seq = np.zeros((1, 1))
-    target_seq[0, 0] = target_tokenizer.word_index['<start>']
+#     # Initialize the target sequence with the start token
+#     target_seq = np.zeros((1, 1))
+#     target_seq[0, 0] = target_tokenizer.word_index['<start>']
 
-    # Generate the output sequence word by word
-    stop_condition = False
-    decoded_sentence = ''
+#     # Generate the output sequence word by word
+#     stop_condition = False
+#     decoded_sentence = ''
 
-    while not stop_condition:
-        # Predict the next word in the sequence
-        output_tokens = main_model.predict([input_seq, target_seq])
+#     while not stop_condition:
+#         # Predict the next word in the sequence
+#         output_tokens = main_model.predict([input_seq, target_seq])
         
-        # Sample a token with the highest probability
-        sampled_token_index = np.argmax(output_tokens[0, -1, :])
-# Sample a token with the highest probability or choose the unknown token
-        sampled_token_index = np.argmax(output_tokens[0, -1, :])
-        sampled_token = target_tokenizer.index_word.get(sampled_token_index, '<unknown>')
+#         # Sample a token with the highest probability
+#         sampled_token_index = np.argmax(output_tokens[0, -1, :])
+# # Sample a token with the highest probability or choose the unknown token
+#         sampled_token_index = np.argmax(output_tokens[0, -1, :])
+#         sampled_token = target_tokenizer.index_word.get(sampled_token_index, '<unknown>')
 
-        # Break the loop if the maximum length is reached or the end token is predicted
-        if sampled_token == '<end>' or len(decoded_sentence.split()) > max_target_length:
-            stop_condition = True
-        else:
-            decoded_sentence += sampled_token + ' '
+#         # Break the loop if the maximum length is reached or the end token is predicted
+#         if sampled_token == '<end>' or len(decoded_sentence.split()) > max_target_length:
+#             stop_condition = True
+#         else:
+#             decoded_sentence += sampled_token + ' '
 
-        # Update the target sequence for the next iteration
-        target_seq = np.zeros((1, 1))
-        target_seq[0, 0] = sampled_token_index
+#         # Update the target sequence for the next iteration
+#         target_seq = np.zeros((1, 1))
+#         target_seq[0, 0] = sampled_token_index
 
-    return decoded_sentence.strip()
+#     return decoded_sentence.strip()
 # Example usage
 
 
@@ -164,7 +164,7 @@ CORS(app)  # Enable CORS for all routes
 def process_data():
     data = request.get_json()
     input_text = data.get('input_string', '')
-    decoded_sentence = predict_sequence(input_text, loaded_model, source_tokenizer, target_tokenizer, 6)
+    decoded_sentence = "Hello"
     print("Final Decoded sentence:", decoded_sentence)
     # Perform some processing in your Python function
     result_string = decoded_sentence
