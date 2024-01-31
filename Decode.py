@@ -1,5 +1,45 @@
+# import requests
+# from tensorflow.keras.models import load_model
+# from io import BytesIO
+# import tempfile
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+# # Replace 'your_modified_link' with the modified link obtained from Google Drive
+# google_drive_link = 'https://drive.google.com/uc?id=1wwAzakr6Se9tAeh1tC60IEaYdL30oBPc'
+
+# print("Downloading the model...")
+
+# response = requests.get(google_drive_link, stream=True)
+# total_size = int(response.headers.get('content-length', 0))
+
+# if response.status_code == 200:
+#     model_content = BytesIO()
+#     downloaded_size = 0
+#     for data in response.iter_content(chunk_size=1024):
+#         downloaded_size += len(data)
+#         model_content.write(data)
+#         done = int(50 * downloaded_size / total_size)
+#         print(f"\r[{'=' * done}{' ' * (50 - done)}] {downloaded_size}/{total_size} bytes downloaded", end='', flush=True)
+
+#     print("\nDownload complete.")
+    
+#     # Save the BytesIO content to a temporary file
+#     with tempfile.NamedTemporaryFile(delete=False, suffix=".h5") as temp_file:
+#         temp_file.write(model_content.getvalue())
+#         temp_file_path = temp_file.name
+
+#     # Load the model from the temporary file
+#     loaded_model = load_model(temp_file_path)
+#     print("Model loaded successfully.")
+
+#     # Clean up the temporary file
+#     os.remove(temp_file_path)
+# else:
+#     print(f"\nFailed to download the model. Status code: {response.status_code}")
+
 import requests
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model, save_model
 from io import BytesIO
 import tempfile
 import os
@@ -7,36 +47,51 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Replace 'your_modified_link' with the modified link obtained from Google Drive
 google_drive_link = 'https://drive.google.com/uc?id=1wwAzakr6Se9tAeh1tC60IEaYdL30oBPc'
+model_filename = 'your_model.h5'  # Choose a suitable filename
 
-print("Downloading the model...")
+def download_model():
+    print("Downloading the model...")
 
-response = requests.get(google_drive_link, stream=True)
-total_size = int(response.headers.get('content-length', 0))
+    response = requests.get(google_drive_link, stream=True)
+    total_size = int(response.headers.get('content-length', 0))
 
-if response.status_code == 200:
-    model_content = BytesIO()
-    downloaded_size = 0
-    for data in response.iter_content(chunk_size=1024):
-        downloaded_size += len(data)
-        model_content.write(data)
-        done = int(50 * downloaded_size / total_size)
-        print(f"\r[{'=' * done}{' ' * (50 - done)}] {downloaded_size}/{total_size} bytes downloaded", end='', flush=True)
+    if response.status_code == 200:
+        model_content = BytesIO()
+        downloaded_size = 0
+        for data in response.iter_content(chunk_size=1024):
+            downloaded_size += len(data)
+            model_content.write(data)
+            done = int(50 * downloaded_size / total_size)
+            print(f"\r[{'=' * done}{' ' * (50 - done)}] {downloaded_size}/{total_size} bytes downloaded", end='', flush=True)
 
-    print("\nDownload complete.")
-    
-    # Save the BytesIO content to a temporary file
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".h5") as temp_file:
-        temp_file.write(model_content.getvalue())
-        temp_file_path = temp_file.name
+        print("\nDownload complete.")
+        
+        # Save the BytesIO content to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".h5") as temp_file:
+            temp_file.write(model_content.getvalue())
+            temp_file_path = temp_file.name
 
-    # Load the model from the temporary file
-    loaded_model = load_model(temp_file_path)
+        # Load the model from the temporary file
+        loaded_model = load_model(temp_file_path)
+        print("Model loaded successfully.")
+
+        # Save the model to a permanent file
+        save_model(loaded_model, model_filename)
+
+        # Clean up the temporary file
+        os.remove(temp_file_path)
+    else:
+        print(f"\nFailed to download the model. Status code: {response.status_code}")
+
+# Check if the model file exists locally
+if os.path.exists(model_filename):
+    # Load the model from the saved file
+    loaded_model = load_model(model_filename)
     print("Model loaded successfully.")
-
-    # Clean up the temporary file
-    os.remove(temp_file_path)
 else:
-    print(f"\nFailed to download the model. Status code: {response.status_code}")
+    # Download and load the model if the file doesn't exist
+    download_model()
+
 
 import pickle
 import requests
