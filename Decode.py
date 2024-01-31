@@ -1,19 +1,71 @@
-# import tensorflow.keras as keras
-# # Load the model
-# loaded_model = keras.models.load_model('trained_model.h5')
+import requests
+from tensorflow.keras.models import load_model
+from io import BytesIO
+import tempfile
+import os
 
-# # Display the model summary
+# Replace 'your_modified_link' with the modified link obtained from Google Drive
+google_drive_link = 'https://drive.google.com/uc?id=1wwAzakr6Se9tAeh1tC60IEaYdL30oBPc'
 
-# import pickle
+print("Downloading the model...")
 
-# # Load source_tokenizer
-# with open('source_tokenizer.pkl', 'rb') as file:
-#     source_tokenizer = pickle.load(file)
+response = requests.get(google_drive_link, stream=True)
+total_size = int(response.headers.get('content-length', 0))
 
-# # Load target_tokenizer
-# with open('target_tokenizer.pkl', 'rb') as file:
-#     target_tokenizer = pickle.load(file)
-# print(target_tokenizer)
+if response.status_code == 200:
+    model_content = BytesIO()
+    downloaded_size = 0
+    for data in response.iter_content(chunk_size=1024):
+        downloaded_size += len(data)
+        model_content.write(data)
+        done = int(50 * downloaded_size / total_size)
+        print(f"\r[{'=' * done}{' ' * (50 - done)}] {downloaded_size}/{total_size} bytes downloaded", end='', flush=True)
+
+    print("\nDownload complete.")
+    
+    # Save the BytesIO content to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".h5") as temp_file:
+        temp_file.write(model_content.getvalue())
+        temp_file_path = temp_file.name
+
+    # Load the model from the temporary file
+    loaded_model = load_model(temp_file_path)
+    print("Model loaded successfully.")
+
+    # Clean up the temporary file
+    os.remove(temp_file_path)
+else:
+    print(f"\nFailed to download the model. Status code: {response.status_code}")
+
+import pickle
+import requests
+from io import BytesIO
+
+# Replace 'source_tokenizer_url' and 'target_tokenizer_url' with the URLs for the respective files
+source_tokenizer_url = 'https://drive.google.com/uc?id=10Dwnf4jzQkMR_QsJYbh6qHFg-GN1s9oI'
+target_tokenizer_url = 'https://drive.google.com/uc?id=1Zn9UWITDiuVwzoZjN3obDCwNoALM0-wB'
+
+# Function to load tokenizer from URL
+def load_tokenizer_from_url(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        tokenizer_content = BytesIO(response.content)
+        tokenizer = pickle.load(tokenizer_content)
+        return tokenizer
+    else:
+        print(f"Failed to download the tokenizer. Status code: {response.status_code}")
+        return None
+
+# Load source tokenizer
+source_tokenizer = load_tokenizer_from_url(source_tokenizer_url)
+if source_tokenizer:
+    print("Source tokenizer loaded successfully.")
+
+# Load target tokenizer
+target_tokenizer = load_tokenizer_from_url(target_tokenizer_url)
+if target_tokenizer:
+    print("Target tokenizer loaded successfully.")
+
 
 import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
