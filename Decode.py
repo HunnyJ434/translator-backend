@@ -3,6 +3,7 @@ from tensorflow.keras.models import load_model
 from io import BytesIO
 import tempfile
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Replace 'your_modified_link' with the modified link obtained from Google Drive
 google_drive_link = 'https://drive.google.com/uc?id=1wwAzakr6Se9tAeh1tC60IEaYdL30oBPc'
