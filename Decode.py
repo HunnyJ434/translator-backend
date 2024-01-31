@@ -99,7 +99,7 @@
 # AIxD+pIfqOw23VLVXfHs4XbAIdLW0RjY9wmKVaV0am9X4gg+l47lXSdE+PPVZLKh06Z+0Iz+ToTRPO1DrAjYag==
 
 
-import keras
+import tensorflow.keras
 # Load the model
 loaded_model = keras.models.load_model('trained_model.h5')
 
@@ -117,7 +117,7 @@ with open('target_tokenizer.pkl', 'rb') as file:
 print(target_tokenizer)
 
 import numpy as np
-from keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 def predict_sequence(input_text, main_model, source_tokenizer, target_tokenizer, max_target_length):
     # Tokenize the input sequence
     input_seq = source_tokenizer.texts_to_sequences([input_text])
