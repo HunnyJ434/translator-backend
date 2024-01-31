@@ -164,7 +164,6 @@ CORS(app)  # Enable CORS for all routes
 @app.route('/api/process_data', methods=['POST'])
 def process_data():
     data = request.get_json()
-    input_text = data.get('input_string', '')
     decoded_sentence = "Hello"
     print("Final Decoded sentence:", decoded_sentence)
     # Perform some processing in your Python function
