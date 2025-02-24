@@ -21,14 +21,21 @@ The API is deployed on **Google Cloud App Engine**, providing real-time translat
 
 ## Usage
 git clone https://github.com/HunnyJ434/ojibwe-translation-api.git
+
 cd ojibwe-translation-api
 
+
 pip install -r requirements.txt
+
 python app.py
 
+
 ### Deploying through gcloud
+
 gcloud auth login
+
 gcloud config set project [PROJECT_ID]
+
 gcloud app deploy
 
 
